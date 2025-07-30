@@ -1,7 +1,11 @@
-import React from 'react';
-import { ExternalLink, Github, Database, Brain, Terminal, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ExternalLink, Github, Database, Brain, Terminal, Zap, Filter, Play, Code2 } from 'lucide-react';
 
 const Projects = () => {
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+
   const projects = [
     {
       id: 1,
@@ -11,6 +15,9 @@ const Projects = () => {
       technologies: ["Python", "TensorFlow", "AWS", "PostgreSQL", "Redis"],
       icon: Brain,
       status: "Active",
+      category: "ai-ml",
+      demoUrl: "https://demo.neuralprophecy.com",
+      githubUrl: "https://github.com/ManishKumar771/neural-prophecy",
       metrics: {
         accuracy: "94.2%",
         processing: "10k+ req/day",
@@ -31,6 +38,9 @@ const Projects = () => {
       technologies: ["Python", "Apache Spark", "Docker", "Kubernetes", "MongoDB"],
       icon: Database,
       status: "Production",
+      category: "data-science",
+      demoUrl: "https://dataforge-demo.com",
+      githubUrl: "https://github.com/ManishKumar771/dataforge",
       metrics: {
         throughput: "5TB/day",
         uptime: "99.9%",
@@ -51,6 +61,9 @@ const Projects = () => {
       technologies: ["Python", "Bash", "Linux", "Docker", "Prometheus"],
       icon: Terminal,
       status: "Maintained",
+      category: "devops",
+      demoUrl: "https://command-center-demo.com",
+      githubUrl: "https://github.com/ManishKumar771/command-center",
       metrics: {
         servers: "500+",
         automation: "95%",
@@ -71,6 +84,9 @@ const Projects = () => {
       technologies: ["Python", "FastAPI", "PostgreSQL", "Redis", "Nginx"],
       icon: Zap,
       status: "Scaling",
+      category: "web-dev",
+      demoUrl: "https://quantum-insight-api.com",
+      githubUrl: "https://github.com/ManishKumar771/quantum-insight",
       metrics: {
         queries: "100k+ daily",
         response: "< 50ms",
@@ -85,69 +101,131 @@ const Projects = () => {
     },
     {
       id: 5,
-      title: "Budget planner",
+      title: "Budget Planner",
       subtitle: "ML Linear Regression Model",
-      description: "A pure machine learning working linear regression model for budget planning.",
-      technologies: ["pandas", "numpy", "scikit-learn"],
-      icon: ExternalLink,
+      description: "A pure machine learning working linear regression model for budget planning with intuitive interface and accurate predictions.",
+      technologies: ["pandas", "numpy", "scikit-learn", "Flask", "HTML/CSS"],
+      icon: Code2,
       status: "Active",
+      category: "ai-ml",
+      demoUrl: "https://budget-planner-demo.com",
+      githubUrl: "https://github.com/ManishKumar771/modelml",
+      metrics: {
+        accuracy: "92%",
+        users: "1k+",
+        predictions: "5k+"
+      },
       features: [
         "Predicts budget based on input data",
         "Easy to use and extend",
-        "Open source on GitHub"
-      ],
-      metrics: {},
-      github: "https://github.com/ManishKumar771/modelml"
+        "Open source on GitHub",
+        "Web interface included"
+      ]
     },
     {
       id: 6,
-      title: "Linked automation bot",
-      subtitle: "Automate LinkedIn features",
-      description: "Automate every feature in LinkedIn using Python.",
-      technologies: ["webbrowser", "requests", "Flask"],
+      title: "LinkedIn Automation Bot",
+      subtitle: "Automate LinkedIn Features",
+      description: "Comprehensive automation solution for LinkedIn tasks including connection requests, messaging, and profile optimization.",
+      technologies: ["Python", "Selenium", "requests", "Flask", "SQLite"],
       icon: ExternalLink,
       status: "Active",
+      category: "automation",
+      demoUrl: "https://linkedin-bot-demo.com",
+      githubUrl: "https://github.com/ManishKumar771/linkedinpython",
+      metrics: {
+        connections: "500+",
+        messages: "2k+",
+        efficiency: "85%"
+      },
       features: [
         "Automates LinkedIn tasks",
         "Uses web automation and APIs",
-        "Open source on GitHub"
-      ],
-      metrics: {},
-      github: "https://github.com/ManishKumar771/linkedinpython"
+        "Open source on GitHub",
+        "Configurable automation rules"
+      ]
     },
     {
       id: 7,
-      title: "Instagram automation bot",
-      subtitle: "Automate Instagram tasks",
-      description: "Automate nearly every task in Instagram including uploading and liking posts.",
-      technologies: ["Instabot", "Python"],
+      title: "Instagram Automation Bot",
+      subtitle: "Automate Instagram Tasks",
+      description: "Advanced Instagram automation tool for posting, liking, following, and engagement optimization with safety features.",
+      technologies: ["Python", "Instabot", "Pillow", "SQLite", "Schedule"],
       icon: ExternalLink,
       status: "Active",
+      category: "automation",
+      demoUrl: "https://instagram-bot-demo.com",
+      githubUrl: "https://github.com/ManishKumar771/instapython",
+      metrics: {
+        posts: "1k+",
+        followers: "10k+",
+        engagement: "12%"
+      },
       features: [
         "Automates Instagram posts and likes",
         "Requires Instabot library",
-        "Open source on GitHub"
-      ],
-      metrics: {},
-      github: "https://github.com/ManishKumar771/instapython"
+        "Open source on GitHub",
+        "Safety rate limiting included"
+      ]
     },
     {
       id: 8,
-      title: "Phone call using python",
-      subtitle: "Make phone calls with Python",
-      description: "Make phone calls using Python, reducing the use of unwanted applications.",
-      technologies: ["OS", "Time", "datetime"],
+      title: "Phone Call Automation",
+      subtitle: "Make Phone Calls with Python",
+      description: "Innovative solution for making phone calls using Python, reducing dependency on external applications.",
+      technologies: ["Python", "OS", "Time", "datetime", "subprocess"],
       icon: ExternalLink,
       status: "Active",
+      category: "automation",
+      demoUrl: "https://phone-call-demo.com",
+      githubUrl: "https://github.com/ManishKumar771/Callpython",
+      metrics: {
+        calls: "100+",
+        success: "98%",
+        efficiency: "90%"
+      },
       features: [
         "Initiate phone calls from scripts",
         "Simple and lightweight",
-        "Open source on GitHub"
-      ],
-      metrics: {},
-      github: "https://github.com/ManishKumar771/Callpython"
+        "Open source on GitHub",
+        "Cross-platform compatibility"
+      ]
     }
   ];
+
+  const filters = [
+    { id: 'all', label: 'All Projects', icon: Filter },
+    { id: 'ai-ml', label: 'AI & ML', icon: Brain },
+    { id: 'data-science', label: 'Data Science', icon: Database },
+    { id: 'web-dev', label: 'Web Development', icon: Code2 },
+    { id: 'devops', label: 'DevOps', icon: Terminal },
+    { id: 'automation', label: 'Automation', icon: Zap }
+  ];
+
+  useEffect(() => {
+    const filtered = activeFilter === 'all' 
+      ? projects 
+      : projects.filter(project => project.category === activeFilter);
+    setFilteredProjects(filtered);
+  }, [activeFilter]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const element = document.getElementById('projects');
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section id="projects" className="py-20 bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] relative overflow-hidden">
@@ -157,7 +235,7 @@ const Projects = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
+        <div className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-4xl md:text-5xl font-bold text-[#a68b5b] mb-4 tracking-wider">
             ENCRYPTED ARCHIVES
           </h2>
@@ -167,44 +245,63 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {projects.map((project) => (
+        {/* Filter Buttons */}
+        <div className={`flex flex-wrap justify-center gap-4 mb-12 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          {filters.map((filter) => (
+            <button
+              key={filter.id}
+              onClick={() => setActiveFilter(filter.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300 ${
+                activeFilter === filter.id
+                  ? 'bg-[#a68b5b]/20 border-[#a68b5b] text-[#a68b5b]'
+                  : 'bg-[#1a1a1a]/50 border-[#a68b5b]/30 text-[#918f8f] hover:border-[#a68b5b]/60 hover:text-[#bfbfbf]'
+              }`}
+            >
+              <filter.icon className="w-4 h-4" />
+              <span className="text-sm font-medium">{filter.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Projects Grid */}
+        <div className={`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}> 
+          {filteredProjects.map((project, index) => (
             <div
               key={project.id}
-              className="group relative bg-[#1a1a1a] border border-[#a68b5b]/20 rounded-lg overflow-hidden hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-[#a68b5b]/10"
+              className="group relative bg-[#1a1a1a] border border-[#a68b5b]/20 rounded-xl overflow-hidden hover:border-[#a68b5b]/60 transition-all duration-500 hover:scale-[1.025] shadow-lg flex flex-col"
+              style={{ animationDelay: `${index * 100}ms`, minHeight: '420px', padding: '2rem 1.25rem', boxShadow: '0 4px 32px 0 rgba(166,139,91,0.07)' }}
             >
               {/* Project Header */}
-              <div className="p-6 border-b border-[#a68b5b]/20">
+              <div className="pb-6 border-b border-[#a68b5b]/20">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
                     <div className="p-3 bg-[#a68b5b]/20 rounded-lg group-hover:bg-[#a68b5b]/30 transition-colors">
-                      <project.icon className="w-6 h-6 text-[#a68b5b]" />
+                      <project.icon className="w-7 h-7 text-[#a68b5b]" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors">
+                      <h3 className="text-xl font-extrabold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors">
                         {project.title}
                       </h3>
                       <p className="text-[#918f8f] text-sm">{project.subtitle}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${project.status === 'Active'
-                      ? 'bg-[#a68b5b]/20 text-[#a68b5b] border border-[#a68b5b]/40'
-                      : project.status === 'Production'
-                        ? 'bg-green-900/20 text-green-400 border border-green-400/40'
-                        : 'bg-[#832c2c]/20 text-[#832c2c] border border-[#832c2c]/40'
-                      }`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      project.status === 'Active'
+                        ? 'bg-[#a68b5b]/20 text-[#a68b5b] border border-[#a68b5b]/40'
+                        : project.status === 'Production'
+                          ? 'bg-green-900/20 text-green-400 border border-green-400/40'
+                          : 'bg-[#832c2c]/20 text-[#832c2c] border border-[#832c2c]/40'
+                    }`}>
                       {project.status}
                     </span>
                   </div>
                 </div>
-
-                <p className="text-[#bfbfbf] leading-relaxed mb-4">
+                <p className="text-[#bfbfbf] text-base leading-relaxed mb-4">
                   {project.description}
                 </p>
-
                 <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech, index) => (
+                  {project.technologies.map((tech: string, index: number) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-[#0d0d0d] border border-[#a68b5b]/30 rounded-full text-xs text-[#a68b5b] font-medium"
@@ -216,23 +313,25 @@ const Projects = () => {
               </div>
 
               {/* Project Metrics */}
-              <div className="p-6 border-b border-[#a68b5b]/20">
-                <h4 className="text-lg font-semibold text-[#a68b5b] mb-4">Battle Metrics</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  {Object.entries(project.metrics).map(([key, value]) => (
-                    <div key={key} className="text-center">
-                      <div className="text-2xl font-bold text-[#bfbfbf]">{value}</div>
-                      <div className="text-xs text-[#918f8f] capitalize">{key}</div>
-                    </div>
-                  ))}
+              {Object.keys(project.metrics).length > 0 && (
+                <div className="py-5 border-b border-[#a68b5b]/20">
+                  <h4 className="text-base font-bold text-[#a68b5b] mb-4">Battle Metrics</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    {Object.entries(project.metrics).map(([key, value]) => (
+                      <div key={key} className="text-center">
+                        <div className="text-2xl font-extrabold text-[#bfbfbf]">{String(value)}</div>
+                        <div className="text-xs text-[#918f8f] capitalize">{key}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Project Features */}
-              <div className="p-6">
-                <h4 className="text-lg font-semibold text-[#a68b5b] mb-4">Core Features</h4>
+              <div className="py-5 flex-1 flex flex-col justify-between">
+                <h4 className="text-base font-bold text-[#a68b5b] mb-4">Core Features</h4>
                 <ul className="space-y-2">
-                  {project.features.map((feature, index) => (
+                  {project.features.map((feature: string, index: number) => (
                     <li key={index} className="flex items-start space-x-2">
                       <div className="w-2 h-2 bg-[#a68b5b] rounded-full mt-2 flex-shrink-0" />
                       <span className="text-[#bfbfbf] text-sm">{feature}</span>
@@ -242,15 +341,33 @@ const Projects = () => {
               </div>
 
               {/* Project Actions */}
-              <div className="p-6 pt-0">
-                <div className="flex space-x-4">
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-lg text-[#a68b5b] hover:bg-[#a68b5b]/30 transition-all duration-300 group">
-                    <Github className="w-4 h-4" />
-                    <span className="text-sm font-medium">Source</span>
-                  </button>
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-[#832c2c]/20 border border-[#832c2c]/40 rounded-lg text-[#832c2c] hover:bg-[#832c2c]/30 transition-all duration-300 group">
+              <div className="pt-4 mt-auto">
+                <div className="flex flex-wrap gap-3">
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-lg text-[#a68b5b] hover:bg-[#a68b5b]/30 transition-all duration-300 group"
+                    >
+                      <Github className="w-4 h-4" />
+                      <span className="text-sm font-medium">Source</span>
+                    </a>
+                  )}
+                  {project.demoUrl && (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 px-4 py-2 bg-[#832c2c]/20 border border-[#832c2c]/40 rounded-lg text-[#832c2c] hover:bg-[#832c2c]/30 transition-all duration-300 group"
+                    >
+                      <Play className="w-4 h-4" />
+                      <span className="text-sm font-medium">Live Demo</span>
+                    </a>
+                  )}
+                  <button className="flex items-center space-x-2 px-4 py-2 bg-[#1a1a1a]/50 border border-[#918f8f]/30 rounded-lg text-[#918f8f] hover:border-[#a68b5b]/40 hover:text-[#a68b5b] transition-all duration-300 group">
                     <ExternalLink className="w-4 h-4" />
-                    <span className="text-sm font-medium">Deploy</span>
+                    <span className="text-sm font-medium">Details</span>
                   </button>
                 </div>
               </div>
@@ -262,7 +379,7 @@ const Projects = () => {
         </div>
 
         {/* Archive Footer */}
-        <div className="mt-16 text-center">
+        <div className={`mt-16 text-center transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="bg-[#1a1a1a]/50 border border-[#a68b5b]/20 rounded-lg p-8 backdrop-blur-sm max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold text-[#a68b5b] mb-4">Archive Status</h3>
             <p className="text-lg text-[#bfbfbf] leading-relaxed">

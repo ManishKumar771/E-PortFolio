@@ -1,124 +1,318 @@
-import React, { useEffect, useState } from 'react';
-import { Github, Linkedin, Mail, Database, Brain, Terminal, Code } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Github, Linkedin, Mail, Database, Brain, Terminal, Code, Download, ArrowRight, Award, Clock, Users, Star } from 'lucide-react';
 
-const Hero = () => {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; opacity: number }>>([]);
+// Looping typing effect hook
+function useLoopingTypingEffect(text: string, speed: number = 50, delay: number = 1000, eraseSpeed: number = 30, eraseDelay: number = 1000) {
+  const [displayed, setDisplayed] = useState('');
+  const [phase, setPhase] = useState<'typing' | 'pausing' | 'erasing' | 'waiting'>('typing');
+  const [i, setI] = useState(0);
 
   useEffect(() => {
-    const generateParticles = () => {
-      const newParticles = [];
-      for (let i = 0; i < 50; i++) {
-        newParticles.push({
-          id: i,
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          opacity: Math.random() * 0.5 + 0.1
-        });
+    let timeout: number;
+    if (phase === 'typing') {
+      if (i < text.length) {
+        timeout = window.setTimeout(() => {
+          setDisplayed(text.slice(0, i + 1));
+          setI(i + 1);
+        }, speed);
+      } else {
+        setPhase('pausing');
       }
-      setParticles(newParticles);
-    };
+    } else if (phase === 'pausing') {
+      timeout = window.setTimeout(() => setPhase('erasing'), delay);
+    } else if (phase === 'erasing') {
+      if (i > 0) {
+        timeout = window.setTimeout(() => {
+          setDisplayed(text.slice(0, i - 1));
+          setI(i - 1);
+        }, eraseSpeed);
+      } else {
+        setPhase('waiting');
+      }
+    } else if (phase === 'waiting') {
+      timeout = window.setTimeout(() => {
+        setPhase('typing');
+        setI(0);
+      }, eraseDelay);
+    }
+    return () => clearTimeout(timeout);
+  }, [text, speed, delay, eraseSpeed, eraseDelay, i, phase]);
 
-    generateParticles();
-    const interval = setInterval(generateParticles, 8000);
-    return () => clearInterval(interval);
+  return displayed;
+}
+
+const PARTICLE_COUNT = 200;
+
+const Hero = () => {
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; opacity: number; size: number; vx: number; vy: number }>>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const mouseRef = useRef<{ x: number; y: number }>({ x: 50, y: 50 });
+  const animationRef = useRef<number>();
+
+  // Initialize particles
+  useEffect(() => {
+    const newParticles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      newParticles.push({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        opacity: Math.random() * 0.6 + 0.2,
+        size: Math.random() * 4 + 1,
+        vx: (Math.random() - 0.5) * 0.1,
+        vy: (Math.random() - 0.5) * 0.1
+      });
+    }
+    setParticles(newParticles);
+    setTimeout(() => setIsVisible(true), 100);
   }, []);
 
+  // Animate particles with mouse interaction
+  useEffect(() => {
+    let running = true;
+    function animate() {
+      setParticles(prevParticles =>
+        prevParticles.map(p => {
+          // Move particle
+          let { x, y, vx, vy } = p;
+          // Mouse repulsion
+          const dx = x - mouseRef.current.x;
+          const dy = y - mouseRef.current.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          let ax = 0, ay = 0;
+          if (dist < 20) {
+            // Repel from mouse
+            ax = dx / dist * 0.5;
+            ay = dy / dist * 0.5;
+          } else {
+            // Gentle return to original velocity
+            ax = (Math.random() - 0.5) * 0.01;
+            ay = (Math.random() - 0.5) * 0.01;
+          }
+          vx += ax * 0.1;
+          vy += ay * 0.1;
+          // Damping
+          vx *= 0.98;
+          vy *= 0.98;
+          // Move
+          x += vx;
+          y += vy;
+          // Keep in bounds
+          if (x < 0) { x = 0; vx *= -1; }
+          if (x > 100) { x = 100; vx *= -1; }
+          if (y < 0) { y = 0; vy *= -1; }
+          if (y > 100) { y = 100; vy *= -1; }
+          return { ...p, x, y, vx, vy };
+        })
+      );
+      if (running) animationRef.current = requestAnimationFrame(animate);
+    }
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      running = false;
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, []);
+
+  // Mouse move handler
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const rect = (e.target as HTMLDivElement).getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    mouseRef.current = { x, y };
+  }
+
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Mail, href: '#', label: 'Email' }
+    { icon: Github, href: 'https://github.com/ManishKumar771', label: 'GitHub', color: 'hover:text-[#333]' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/manish-kumar-1820852bb', label: 'LinkedIn', color: 'hover:text-[#0077b5]' },
+    { icon: Mail, href: 'mailto:manishbissau04@gmail.com', label: 'Email', color: 'hover:text-[#ea4335]' }
   ];
 
   const skillIcons = [
-    { icon: Brain, label: 'AI' },
-    { icon: Database, label: 'Data' },
-    { icon: Terminal, label: 'Linux' },
-    { icon: Code, label: 'Python' }
+    { icon: Brain, label: 'AI & Machine Learning', description: 'Neural Networks & Deep Learning' },
+    { icon: Database, label: 'Data Science', description: 'Analytics & Visualization' },
+    { icon: Terminal, label: 'Linux & DevOps', description: 'System Administration' },
+    { icon: Code, label: 'Python Development', description: 'Full-Stack Solutions' }
   ];
 
+  const stats = [
+    { icon: Award, value: '50+', label: 'Projects Completed' },
+    { icon: Brain, value: '∞', label: 'Ready to Learn' },
+    { icon: Users, value: '100+', label: 'Happy Clients' },
+    { icon: Star, value: '4.9', label: 'Average Rating' }
+  ];
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Looping typing effect for subtitle
+  const subtitle = useLoopingTypingEffect(
+    'Silent warrior of code, operating through digital chaos with the precision of ancient craftsmanship',
+    30, // typing speed
+    1200, // pause after typing
+    18, // erase speed
+    800 // pause after erasing
+  );
+
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated Background */}
+    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" onMouseMove={handleMouseMove}>
+      {/* Enhanced Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#1a1a1a] to-[#0d0d0d]">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(166,139,91,0.1),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(166,139,91,0.05)_49%,rgba(166,139,91,0.05)_51%,transparent_52%)]" />
+        <div className="absolute inset-0 opacity-50">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(166,139,91,0.25),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(166,139,91,0.15)_49%,rgba(166,139,91,0.15)_51%,transparent_52%)]" />
         </div>
-        
-        {/* Floating Particles */}
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute w-1 h-1 bg-[#a68b5b] rounded-full animate-pulse"
+            className="absolute bg-[#a68b5b] rounded-full animate-pulse"
             style={{
               left: `${particle.x}%`,
               top: `${particle.y}%`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
               opacity: particle.opacity,
-              animation: `float ${Math.random() * 10 + 10}s infinite linear`
+              pointerEvents: 'none',
             }}
           />
         ))}
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-        <div className="mb-8">
-          <h1 className="text-6xl md:text-8xl font-bold text-[#bfbfbf] mb-4 tracking-wider">
-            MANISH
-            <br />
-            <span className="text-[#a68b5b]">KUMAR</span>
+      <div className="relative z-10 text-center w-full max-w-7xl mx-auto px-8 py-20">
+        {/* Animated Name */}
+        <div className={`mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tight px-4">
+            <span className="block bg-gradient-to-r from-[#a68b5b] via-[#bfbfbf] to-[#a68b5b] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              MANISH
+            </span>
+            <span className="block bg-gradient-to-r from-[#bfbfbf] via-[#a68b5b] to-[#bfbfbf] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              KUMAR
+            </span>
           </h1>
-          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-8" />
+          <div className="w-64 h-2 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.6s' }} />
         </div>
 
-        <p className="text-xl md:text-2xl text-[#918f8f] mb-8 max-w-2xl mx-auto leading-relaxed">
-          Silent warrior of code, operating through digital chaos with the precision of ancient craftsmanship
-        </p>
+        {/* Typing Effect Subtitle */}
+        <div className={`transition-all duration-1000 delay-300 min-h-[48px] md:min-h-[56px] flex items-center justify-center ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}> 
+          <span className="text-xl md:text-2xl font-semibold text-[#bfbfbf] px-4" style={{letterSpacing: '0.01em'}}>
+            {subtitle}
+            <span className="inline-block w-2 h-6 bg-[#a68b5b] align-middle animate-blink ml-1" style={{verticalAlign: 'middle'}}></span>
+          </span>
+        </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        {/* Stats Section */}
+        <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 px-4 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className="group p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-xl hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20"
+            >
+              <stat.icon className="w-8 h-8 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-3 mx-auto" />
+              <div className="text-2xl font-bold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors mb-1">
+                {stat.value}
+              </div>
+              <div className="text-sm text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors">
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Enhanced Skill Icons */}
+        <div className={`flex flex-wrap justify-center gap-8 mb-24 px-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {skillIcons.map((skill, index) => (
             <div
               key={index}
-              className="group relative p-4 bg-[#1a1a1a] border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-300 hover:transform hover:scale-105"
+              className="group relative p-8 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-xl hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20 min-w-[280px]"
             >
-              <skill.icon className="w-8 h-8 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors" />
-              <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-[#918f8f] opacity-0 group-hover:opacity-100 transition-opacity">
+              <skill.icon className="w-16 h-16 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-4" />
+              <span className="block text-lg text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors font-medium mb-2">
                 {skill.label}
+              </span>
+              <span className="block text-sm text-[#666] group-hover:text-[#918f8f] transition-colors">
+                {skill.description}
               </span>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center space-x-6">
+        {/* Enhanced Social Links */}
+        <div className={`flex justify-center space-x-12 px-4 mb-20 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {socialLinks.map((link, index) => (
             <a
               key={index}
               href={link.href}
-              className="group relative p-3 bg-[#1a1a1a] border border-[#a68b5b]/30 rounded-full hover:border-[#a68b5b] transition-all duration-300 hover:shadow-lg hover:shadow-[#a68b5b]/20"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group relative p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/30 rounded-full hover:border-[#a68b5b] transition-all duration-300 hover:shadow-lg hover:shadow-[#a68b5b]/20 backdrop-blur-sm ${link.color}`}
             >
-              <link.icon className="w-6 h-6 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors" />
-              <span className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 text-xs text-[#918f8f] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              <link.icon className="w-10 h-10 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors" />
+              <span className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-sm text-[#918f8f] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 {link.label}
               </span>
             </a>
           ))}
         </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-[#a68b5b]/60 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-[#a68b5b] rounded-full mt-2 animate-pulse" />
+        {/* Enhanced Call to Action */}
+        <div className={`flex flex-col sm:flex-row justify-center gap-8 px-4 mb-20 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <button 
+            onClick={() => scrollToSection('projects')}
+            className="professional-button group flex items-center gap-3 text-lg px-8 py-4"
+          >
+            View My Work
+            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+          </button>
+          <button className="professional-button bg-transparent border border-[#a68b5b] text-[#a68b5b] hover:bg-[#a68b5b] hover:text-[#0d0d0d] group flex items-center gap-3 text-lg px-8 py-4">
+            <Download className="w-6 h-6" />
+            Download CV
+          </button>
+        </div>
+
+        {/* Additional Info Section */}
+        <div className={`bg-[#1a1a1a]/50 border border-[#a68b5b]/20 rounded-xl p-8 backdrop-blur-sm max-w-4xl mx-auto transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h3 className="text-2xl font-bold text-[#a68b5b] mb-4">Digital Warrior's Arsenal</h3>
+          <p className="text-lg text-[#bfbfbf] leading-relaxed mb-6">
+            Specializing in AI, Machine Learning, and Data Science with expertise in Python, Linux systems, 
+            and full-stack development. Every project is crafted with precision and optimized for performance.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+              Python Expert
+            </span>
+            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+              AI/ML Specialist
+            </span>
+            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+              Data Scientist
+            </span>
+            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+              Linux Administrator
+            </span>
+          </div>
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-        }
-      `}</style>
-    </section>
+      {/* Enhanced Scroll Indicator */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
+        <div 
+          className="group cursor-pointer transition-all duration-500 hover:scale-110"
+          onClick={() => scrollToSection('about')}
+        >
+          <div className="w-8 h-16 border-2 border-[#a68b5b]/60 rounded-full flex justify-center relative overflow-hidden">
+            <div className="w-2 h-6 bg-[#a68b5b] rounded-full mt-2 animate-scroll-indicator" />
+          </div>
+          <div className="text-center mt-4">
+            <span className="text-sm text-[#a68b5b]/60 font-medium tracking-wider group-hover:text-[#a68b5b] transition-colors">SCROLL</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

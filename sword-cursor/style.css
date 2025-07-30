@@ -1,0 +1,182 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    cursor: none;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+    color: #bfbfbf;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Container styles */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #a68b5b;
+    text-shadow: 0 0 10px rgba(166, 139, 91, 0.5);
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #918f8f;
+}
+
+/* Interactive elements */
+.interactive-elements {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 40px 0;
+}
+
+.test-link, .test-button {
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #a68b5b, #832c2c);
+    color: #0d0d0d;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(166, 139, 91, 0.3);
+}
+
+.test-link:hover, .test-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(166, 139, 91, 0.5);
+}
+
+/* Info section */
+.info {
+    margin-top: 60px;
+    text-align: left;
+    background: rgba(26, 26, 26, 0.8);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(166, 139, 91, 0.3);
+}
+
+.info h2 {
+    color: #a68b5b;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.info ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.info li {
+    padding: 8px 0;
+    color: #bfbfbf;
+    position: relative;
+    padding-left: 25px;
+}
+
+.info li::before {
+    content: "⚔️";
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+
+/* Sword Cursor */
+#sword-cursor {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='blade' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23a68b5b;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23bfbfbf;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23a68b5b;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='handle' x1='0%25' y1='0%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%23832c2c;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23a68b5b;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Sword Blade --%3E%3Cpath d='M16 4 L16 24 L18 26 L14 26 Z' fill='url(%23blade)' stroke='%23a68b5b' stroke-width='0.5'/%3E%3C!-- Sword Handle --%3E%3Crect x='14' y='26' width='4' height='6' fill='url(%23handle)' stroke='%23a68b5b' stroke-width='0.5'/%3E%3C!-- Sword Guard --%3E%3Crect x='12' y='24' width='8' height='2' fill='%23a68b5b' stroke='%23a68b5b' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: translate3d(-50%, -50%, 0);
+    transition: transform 0.1s ease-out;
+}
+
+/* Slash Animation */
+@keyframes slash-animation {
+    0% {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(0) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(1) rotate(45deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(-50%, -50%, 0) scale(1.5) rotate(90deg);
+    }
+}
+
+.slash {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    z-index: 9998;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cdefs%3E%3ClinearGradient id='slash-glow' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23a68b5b;stop-opacity:0.8' /%3E%3Cstop offset='50%25' style='stop-color:%23ffffff;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23a68b5b;stop-opacity:0.8' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M10 50 L50 10 L55 15 L15 55 Z' fill='url(%23slash-glow)'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: slash-animation 0.3s ease-out forwards;
+}
+
+/* Glow Animation */
+@keyframes glow-animation {
+    0% {
+        filter: brightness(1) drop-shadow(0 0 5px rgba(166, 139, 91, 0.5));
+        transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+    50% {
+        filter: brightness(1.3) drop-shadow(0 0 15px rgba(166, 139, 91, 0.8));
+        transform: translate3d(-50%, -50%, 0) scale(1.1);
+    }
+    100% {
+        filter: brightness(1) drop-shadow(0 0 5px rgba(166, 139, 91, 0.5));
+        transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+}
+
+.hover-active {
+    animation: glow-animation 0.6s ease-in-out infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .interactive-elements {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .test-link, .test-button {
+        width: 200px;
+    }
+} 

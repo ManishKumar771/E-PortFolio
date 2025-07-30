@@ -35,19 +35,19 @@ const Skills = () => {
     : skills.filter(skill => skill.category === selectedCategory);
 
   return (
-    <section id="skills" className="py-20 bg-[#0d0d0d] relative overflow-hidden">
+    <section id="skills" className="py-24 sm:py-32 bg-[#0d0d0d] relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(166,139,91,0.1)_49%,rgba(166,139,91,0.1)_51%,transparent_52%)] bg-[length:20px_20px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#a68b5b] mb-4 tracking-wider">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#a68b5b] mb-6 tracking-wider">
             NEURAL SYSTEM REGISTRY
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-8" />
-          <p className="text-xl text-[#918f8f] max-w-2xl mx-auto">
+          <div className="w-24 sm:w-32 h-1.5 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-10" />
+          <p className="text-xl sm:text-2xl text-[#918f8f] max-w-3xl mx-auto">
             Mastery forged through countless battles in the digital realm
           </p>
         </div>
