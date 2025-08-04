@@ -159,7 +159,7 @@ const Hero = () => {
   );
 
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" onMouseMove={handleMouseMove}>
+    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" onMouseMove={handleMouseMove} style={{ scrollBehavior: 'auto' }}>
       {/* Enhanced Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#1a1a1a] to-[#0d0d0d]">
         <div className="absolute inset-0 opacity-50">
@@ -182,11 +182,31 @@ const Hero = () => {
         ))}
       </div>
 
+      {/* Profile Image - Top Left Corner */}
+      <div className="absolute top-16 left-8 z-20">
+        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-[#a68b5b]/40 shadow-lg backdrop-blur-sm">
+          <img 
+            src="/profile.jpg.jpg" 
+            alt="Manish Kumar" 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              console.log('Image failed to load:', e.currentTarget.src);
+              // Show a simple placeholder if image fails
+              e.currentTarget.style.display = 'none';
+              const placeholder = document.createElement('div');
+              placeholder.className = 'w-full h-full bg-gradient-to-br from-[#a68b5b] to-[#832c2c] flex items-center justify-center text-white font-bold text-sm';
+              placeholder.textContent = 'MK';
+              e.currentTarget.parentNode?.appendChild(placeholder);
+            }}
+          />
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="relative z-10 text-center w-full max-w-7xl mx-auto px-8 py-20">
         {/* Animated Name */}
-        <div className={`mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tight px-4">
+        <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight px-4">
             <span className="block bg-gradient-to-r from-[#a68b5b] via-[#bfbfbf] to-[#a68b5b] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               MANISH
             </span>
@@ -194,29 +214,29 @@ const Hero = () => {
               KUMAR
             </span>
           </h1>
-          <div className="w-64 h-2 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.6s' }} />
+          <div className="w-48 h-1 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: '0.6s' }} />
         </div>
 
         {/* Typing Effect Subtitle */}
-        <div className={`transition-all duration-1000 delay-300 min-h-[48px] md:min-h-[56px] flex items-center justify-center ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}> 
-          <span className="text-xl md:text-2xl font-semibold text-[#bfbfbf] px-4" style={{letterSpacing: '0.01em'}}>
+        <div className={`typing-container transition-all duration-1000 delay-300 h-[40px] md:h-[48px] flex items-center justify-center overflow-hidden ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}> 
+          <span className="text-lg md:text-xl font-semibold text-[#bfbfbf] px-4 whitespace-nowrap" style={{letterSpacing: '0.01em'}}>
             {subtitle}
-            <span className="inline-block w-2 h-6 bg-[#a68b5b] align-middle animate-blink ml-1" style={{verticalAlign: 'middle'}}></span>
+            <span className="inline-block w-2 h-5 bg-[#a68b5b] align-middle animate-blink ml-1" style={{verticalAlign: 'middle'}}></span>
           </span>
         </div>
 
         {/* Stats Section */}
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 px-4 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 px-4 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="group p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-xl hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20"
+              className="group p-4 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20"
             >
-              <stat.icon className="w-8 h-8 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-3 mx-auto" />
-              <div className="text-2xl font-bold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors mb-1">
+              <stat.icon className="w-6 h-6 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-2 mx-auto" />
+              <div className="text-xl font-bold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors mb-1">
                 {stat.value}
               </div>
-              <div className="text-sm text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors">
+              <div className="text-xs text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors">
                 {stat.label}
               </div>
             </div>
@@ -224,17 +244,17 @@ const Hero = () => {
         </div>
 
         {/* Enhanced Skill Icons */}
-        <div className={`flex flex-wrap justify-center gap-8 mb-24 px-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className={`flex flex-wrap justify-center gap-6 mb-20 px-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {skillIcons.map((skill, index) => (
             <div
               key={index}
-              className="group relative p-8 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-xl hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20 min-w-[280px]"
+              className="group relative p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20 min-w-[240px]"
             >
-              <skill.icon className="w-16 h-16 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-4" />
-              <span className="block text-lg text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors font-medium mb-2">
+              <skill.icon className="w-12 h-12 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-3" />
+              <span className="block text-base text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors font-medium mb-1">
                 {skill.label}
               </span>
-              <span className="block text-sm text-[#666] group-hover:text-[#918f8f] transition-colors">
+              <span className="block text-xs text-[#666] group-hover:text-[#918f8f] transition-colors">
                 {skill.description}
               </span>
             </div>
@@ -270,7 +290,7 @@ const Hero = () => {
           </button>
           <button className="professional-button bg-transparent border border-[#a68b5b] text-[#a68b5b] hover:bg-[#a68b5b] hover:text-[#0d0d0d] group flex items-center gap-3 text-lg px-8 py-4">
             <Download className="w-6 h-6" />
-            Download CV
+            Download Resume
           </button>
         </div>
 

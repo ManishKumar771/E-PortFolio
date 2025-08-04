@@ -48,11 +48,11 @@ const Navigation = () => {
     { id: 'contact', label: 'Interface', icon: MessageSquare }
   ];
 
-  const downloadCV = () => {
-    // Simulate CV download
+  const downloadResume = () => {
+    // Simulate resume download
     const link = document.createElement('a');
-    link.href = '/path-to-cv.pdf'; // Replace with actual CV path
-    link.download = 'Manish_Kumar_CV.pdf';
+    link.href = '/path-to-resume.pdf'; // Replace with actual resume path
+    link.download = 'Manish_Kumar_Resume.pdf';
     link.click();
   };
 
@@ -63,23 +63,23 @@ const Navigation = () => {
         isScrolled ? 'bg-[#0d0d0d]/98 shadow-lg' : 'bg-[#0d0d0d]/95'
       }`}>
         <div className="full-width-container">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            <div className="flex items-center space-x-8 lg:space-x-12">
-              <span className="text-[#a68b5b] font-bold text-lg lg:text-xl tracking-wider hover:text-[#bfbfbf] transition-colors cursor-pointer">
+          <div className="flex items-center justify-between h-14 lg:h-16">
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <span className="text-[#a68b5b] font-bold text-base lg:text-lg tracking-wider hover:text-[#bfbfbf] transition-colors cursor-pointer">
                 BANNER OF REALMS
               </span>
-              <div className="hidden md:flex space-x-6 lg:space-x-8">
+              <div className="hidden md:flex space-x-4 lg:space-x-6">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`relative px-4 py-2 text-sm lg:text-base font-medium transition-all duration-300 group flex items-center space-x-2 ${
+                    className={`relative px-3 py-1.5 text-xs lg:text-sm font-medium transition-all duration-300 group flex items-center space-x-1.5 ${
                       activeSection === item.id
                         ? 'text-[#a68b5b]'
                         : 'text-[#bfbfbf] hover:text-[#a68b5b]'
                     }`}
                   >
-                    <item.icon className="w-4 h-4" />
+                    <item.icon className="w-3 h-3" />
                     <span>{item.label}</span>
                     <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-[#a68b5b] transition-all duration-300 ${
                       activeSection === item.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
@@ -88,13 +88,13 @@ const Navigation = () => {
                 ))}
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <button 
-                onClick={downloadCV}
-                className="hidden md:flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#a68b5b]/20 to-[#832c2c]/20 border border-[#a68b5b]/40 rounded-lg text-[#a68b5b] hover:from-[#a68b5b]/30 hover:to-[#832c2c]/30 transition-all duration-300 group hover:scale-105"
+                onClick={downloadResume}
+                className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-[#a68b5b]/20 to-[#832c2c]/20 border border-[#a68b5b]/40 rounded-md text-[#a68b5b] hover:from-[#a68b5b]/30 hover:to-[#832c2c]/30 transition-all duration-300 group hover:scale-105"
               >
-                <Download className="w-4 h-4 group-hover:animate-bounce" />
-                <span className="text-sm font-medium">CV SCROLL</span>
+                <Download className="w-3 h-3 group-hover:animate-bounce" />
+                <span className="text-xs font-medium">RESUME SCROLL</span>
               </button>
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -136,11 +136,11 @@ const Navigation = () => {
             
             <div className="w-full border-t border-[#a68b5b]/20 pt-6 mt-6">
               <button 
-                onClick={downloadCV}
+                onClick={downloadResume}
                 className="flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-[#a68b5b]/20 to-[#832c2c]/20 border border-[#a68b5b]/40 rounded-lg text-[#a68b5b] hover:from-[#a68b5b]/30 hover:to-[#832c2c]/30 transition-all duration-300 w-full justify-center group"
               >
                 <Download className="w-5 h-5 group-hover:animate-bounce" />
-                <span className="font-medium text-base">CV SCROLL</span>
+                <span className="font-medium text-base">RESUME SCROLL</span>
               </button>
             </div>
           </div>
