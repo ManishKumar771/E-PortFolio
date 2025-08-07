@@ -2,42 +2,19 @@ import { useEffect, useState } from 'react';
 import { Code, Database, Brain, Terminal, Shield, Zap, Award, Clock, Users, Target, CheckCircle } from 'lucide-react';
 
 // Looping typing effect hook (same as in Hero)
-function useLoopingTypingEffect(text: string, speed: number = 50, delay: number = 1000, eraseSpeed: number = 30, eraseDelay: number = 1000) {
+function useLoopingTypingEffect(text: string, speed: number = 50) {
   const [displayed, setDisplayed] = useState('');
-  const [phase, setPhase] = useState<'typing' | 'pausing' | 'erasing' | 'waiting'>('typing');
   const [i, setI] = useState(0);
-
   useEffect(() => {
     let timeout: number;
-    if (phase === 'typing') {
-      if (i < text.length) {
-        timeout = window.setTimeout(() => {
-          setDisplayed(text.slice(0, i + 1));
-          setI(i + 1);
-        }, speed);
-      } else {
-        setPhase('pausing');
-      }
-    } else if (phase === 'pausing') {
-      timeout = window.setTimeout(() => setPhase('erasing'), delay);
-    } else if (phase === 'erasing') {
-      if (i > 0) {
-        timeout = window.setTimeout(() => {
-          setDisplayed(text.slice(0, i - 1));
-          setI(i - 1);
-        }, eraseSpeed);
-      } else {
-        setPhase('waiting');
-      }
-    } else if (phase === 'waiting') {
+    if (i < text.length) {
       timeout = window.setTimeout(() => {
-        setPhase('typing');
-        setI(0);
-      }, eraseDelay);
+        setDisplayed(text.slice(0, i + 1));
+        setI(i + 1);
+      }, speed);
     }
     return () => clearTimeout(timeout);
-  }, [text, speed, delay, eraseSpeed, eraseDelay, i, phase]);
-
+  }, [text, speed, i]);
   return displayed;
 }
 

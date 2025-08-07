@@ -410,3 +410,15 @@ h2, h3, h4 {
   contain: layout;
   will-change: contents;
 }
+
+@keyframes preloader-glow {
+  0%, 100% {
+    box-shadow: 0 0 32px 8px #a68b5b44, 0 0 0px 0px #3cf0;
+  }
+  50% {
+    box-shadow: 0 0 64px 24px #a68b5b88, 0 0 24px 8px #3cf6;
+  }
+}
+.animate-preloader-glow {
+  animation: preloader-glow 2.2s ease-in-out infinite;
+}

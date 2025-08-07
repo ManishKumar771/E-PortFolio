@@ -2,42 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import { Github, Linkedin, Mail, Database, Brain, Terminal, Code, Download, ArrowRight, Award, Clock, Users, Star } from 'lucide-react';
 
 // Looping typing effect hook
-function useLoopingTypingEffect(text: string, speed: number = 50, delay: number = 1000, eraseSpeed: number = 30, eraseDelay: number = 1000) {
+function useLoopingTypingEffect(text: string, speed: number = 50) {
   const [displayed, setDisplayed] = useState('');
-  const [phase, setPhase] = useState<'typing' | 'pausing' | 'erasing' | 'waiting'>('typing');
   const [i, setI] = useState(0);
-
   useEffect(() => {
     let timeout: number;
-    if (phase === 'typing') {
-      if (i < text.length) {
-        timeout = window.setTimeout(() => {
-          setDisplayed(text.slice(0, i + 1));
-          setI(i + 1);
-        }, speed);
-      } else {
-        setPhase('pausing');
-      }
-    } else if (phase === 'pausing') {
-      timeout = window.setTimeout(() => setPhase('erasing'), delay);
-    } else if (phase === 'erasing') {
-      if (i > 0) {
-        timeout = window.setTimeout(() => {
-          setDisplayed(text.slice(0, i - 1));
-          setI(i - 1);
-        }, eraseSpeed);
-      } else {
-        setPhase('waiting');
-      }
-    } else if (phase === 'waiting') {
+    if (i < text.length) {
       timeout = window.setTimeout(() => {
-        setPhase('typing');
-        setI(0);
-      }, eraseDelay);
+        setDisplayed(text.slice(0, i + 1));
+        setI(i + 1);
+      }, speed);
     }
     return () => clearTimeout(timeout);
-  }, [text, speed, delay, eraseSpeed, eraseDelay, i, phase]);
-
+  }, [text, speed, i]);
   return displayed;
 }
 
@@ -182,138 +159,138 @@ const Hero = () => {
         ))}
       </div>
 
-      {/* Profile Image - Top Left Corner */}
-      <div className="absolute top-16 left-8 z-20">
-        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-[#a68b5b]/40 shadow-lg backdrop-blur-sm">
-          <img 
-            src="/profile.jpg.jpg" 
-            alt="Manish Kumar" 
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.log('Image failed to load:', e.currentTarget.src);
-              // Show a simple placeholder if image fails
-              e.currentTarget.style.display = 'none';
-              const placeholder = document.createElement('div');
-              placeholder.className = 'w-full h-full bg-gradient-to-br from-[#a68b5b] to-[#832c2c] flex items-center justify-center text-white font-bold text-sm';
-              placeholder.textContent = 'MK';
-              e.currentTarget.parentNode?.appendChild(placeholder);
-            }}
-          />
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="relative z-10 text-center w-full max-w-7xl mx-auto px-8 py-20">
-        {/* Animated Name */}
-        <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight px-4">
-            <span className="block bg-gradient-to-r from-[#a68b5b] via-[#bfbfbf] to-[#a68b5b] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              MANISH
-            </span>
-            <span className="block bg-gradient-to-r from-[#bfbfbf] via-[#a68b5b] to-[#bfbfbf] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              KUMAR
-            </span>
-          </h1>
-          <div className="w-48 h-1 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: '0.6s' }} />
-        </div>
-
-        {/* Typing Effect Subtitle */}
-        <div className={`typing-container transition-all duration-1000 delay-300 h-[40px] md:h-[48px] flex items-center justify-center overflow-hidden ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}> 
-          <span className="text-lg md:text-xl font-semibold text-[#bfbfbf] px-4 whitespace-nowrap" style={{letterSpacing: '0.01em'}}>
-            {subtitle}
-            <span className="inline-block w-2 h-5 bg-[#a68b5b] align-middle animate-blink ml-1" style={{verticalAlign: 'middle'}}></span>
-          </span>
-        </div>
-
-        {/* Stats Section */}
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 px-4 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="group p-4 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20"
-            >
-              <stat.icon className="w-6 h-6 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-2 mx-auto" />
-              <div className="text-xl font-bold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors mb-1">
-                {stat.value}
-              </div>
-              <div className="text-xs text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors">
-                {stat.label}
-              </div>
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-8 py-20">
+        {/* Profile Image and Name Side by Side */}
+        <div className="flex flex-col items-center">
+          <div className="flex flex-row items-center justify-center mb-16 w-full gap-8">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-2 border-[#a68b5b]/40 shadow-lg backdrop-blur-sm flex-shrink-0">
+              <img 
+                src="/profile.jpg.jpg" 
+                alt="Manish Kumar" 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  console.log('Image failed to load:', e.currentTarget.src);
+                  e.currentTarget.style.display = 'none';
+                  const placeholder = document.createElement('div');
+                  placeholder.className = 'w-full h-full bg-gradient-to-br from-[#a68b5b] to-[#832c2c] flex items-center justify-center text-white font-bold text-sm';
+                  placeholder.textContent = 'MK';
+                  e.currentTarget.parentNode?.appendChild(placeholder);
+                }}
+              />
             </div>
-          ))}
-        </div>
+            <div>
+              <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight px-4 mt-8">
+                <span className="block bg-gradient-to-r from-[#a68b5b] via-[#bfbfbf] to-[#a68b5b] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                  MANISH
+                </span>
+                <span className="block bg-gradient-to-r from-[#bfbfbf] via-[#a68b5b] to-[#bfbfbf] bg-clip-text text-transparent animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                  KUMAR
+                </span>
+              </h1>
+              <div className="w-48 h-1 bg-gradient-to-r from-transparent via-[#a68b5b] to-transparent mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: '0.6s' }} />
+            </div>
+          </div>
 
-        {/* Enhanced Skill Icons */}
-        <div className={`flex flex-wrap justify-center gap-6 mb-20 px-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          {skillIcons.map((skill, index) => (
-            <div
-              key={index}
-              className="group relative p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20 min-w-[240px]"
+          {/* Typing Effect Subtitle */}
+          <div className={`typing-container transition-all duration-1000 delay-300 h-[40px] md:h-[48px] flex items-center justify-center overflow-hidden ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}> 
+            <span className="text-lg md:text-xl font-semibold text-[#bfbfbf] px-4 whitespace-nowrap" style={{letterSpacing: '0.01em'}}>
+              {subtitle}
+              <span className="inline-block w-2 h-5 bg-[#a68b5b] align-middle animate-blink ml-1" style={{verticalAlign: 'middle'}}></span>
+            </span>
+          </div>
+
+          {/* Stats Section */}
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 px-4 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                className="group p-4 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20"
+              >
+                <stat.icon className="w-6 h-6 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-2 mx-auto" />
+                <div className="text-xl font-bold text-[#bfbfbf] group-hover:text-[#a68b5b] transition-colors mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Enhanced Skill Icons */}
+          <div className={`flex flex-wrap justify-center gap-6 mb-20 px-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {skillIcons.map((skill, index) => (
+              <div
+                key={index}
+                className="group relative p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/20 rounded-lg hover:border-[#a68b5b]/60 transition-all duration-500 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#a68b5b]/20 min-w-[240px]"
+              >
+                <skill.icon className="w-12 h-12 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-3" />
+                <span className="block text-base text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors font-medium mb-1">
+                  {skill.label}
+                </span>
+                <span className="block text-xs text-[#666] group-hover:text-[#918f8f] transition-colors">
+                  {skill.description}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Enhanced Social Links */}
+          <div className={`flex justify-center space-x-12 px-4 mb-20 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {socialLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group relative p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/30 rounded-full hover:border-[#a68b5b] transition-all duration-300 hover:shadow-lg hover:shadow-[#a68b5b]/20 backdrop-blur-sm ${link.color}`}
+                onMouseEnter={() => window.dispatchEvent(new CustomEvent('bubble-burst'))}
+              >
+                <link.icon className="w-10 h-10 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors" />
+                <span className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-sm text-[#918f8f] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {link.label}
+                </span>
+              </a>
+            ))}
+          </div>
+
+          {/* Enhanced Call to Action */}
+          <div className={`flex flex-col sm:flex-row justify-center gap-8 px-4 mb-20 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <button 
+              onClick={() => scrollToSection('projects')}
+              className="professional-button group flex items-center gap-3 text-lg px-8 py-4"
             >
-              <skill.icon className="w-12 h-12 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors mb-3" />
-              <span className="block text-base text-[#918f8f] group-hover:text-[#bfbfbf] transition-colors font-medium mb-1">
-                {skill.label}
+              View My Work
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="professional-button bg-transparent border border-[#a68b5b] text-[#a68b5b] hover:bg-[#a68b5b] hover:text-[#0d0d0d] group flex items-center gap-3 text-lg px-8 py-4">
+              <Download className="w-6 h-6" />
+              Download Resume
+            </button>
+          </div>
+
+          {/* Additional Info Section */}
+          <div className={`bg-[#1a1a1a]/50 border border-[#a68b5b]/20 rounded-xl p-8 backdrop-blur-sm max-w-4xl mx-auto transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <h3 className="text-2xl font-bold text-[#a68b5b] mb-4">Digital Warrior's Arsenal</h3>
+            <p className="text-lg text-[#bfbfbf] leading-relaxed mb-6">
+              Specializing in AI, Machine Learning, and Data Science with expertise in Python, Linux systems, 
+              and full-stack development. Every project is crafted with precision and optimized for performance.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+                Python Expert
               </span>
-              <span className="block text-xs text-[#666] group-hover:text-[#918f8f] transition-colors">
-                {skill.description}
+              <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+                AI/ML Specialist
+              </span>
+              <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+                Data Scientist
+              </span>
+              <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
+                Linux Administrator
               </span>
             </div>
-          ))}
-        </div>
-
-        {/* Enhanced Social Links */}
-        <div className={`flex justify-center space-x-12 px-4 mb-20 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          {socialLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group relative p-6 bg-[#1a1a1a]/80 border border-[#a68b5b]/30 rounded-full hover:border-[#a68b5b] transition-all duration-300 hover:shadow-lg hover:shadow-[#a68b5b]/20 backdrop-blur-sm ${link.color}`}
-            >
-              <link.icon className="w-10 h-10 text-[#a68b5b] group-hover:text-[#bfbfbf] transition-colors" />
-              <span className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-sm text-[#918f8f] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                {link.label}
-              </span>
-            </a>
-          ))}
-        </div>
-
-        {/* Enhanced Call to Action */}
-        <div className={`flex flex-col sm:flex-row justify-center gap-8 px-4 mb-20 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <button 
-            onClick={() => scrollToSection('projects')}
-            className="professional-button group flex items-center gap-3 text-lg px-8 py-4"
-          >
-            View My Work
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-          </button>
-          <button className="professional-button bg-transparent border border-[#a68b5b] text-[#a68b5b] hover:bg-[#a68b5b] hover:text-[#0d0d0d] group flex items-center gap-3 text-lg px-8 py-4">
-            <Download className="w-6 h-6" />
-            Download Resume
-          </button>
-        </div>
-
-        {/* Additional Info Section */}
-        <div className={`bg-[#1a1a1a]/50 border border-[#a68b5b]/20 rounded-xl p-8 backdrop-blur-sm max-w-4xl mx-auto transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h3 className="text-2xl font-bold text-[#a68b5b] mb-4">Digital Warrior's Arsenal</h3>
-          <p className="text-lg text-[#bfbfbf] leading-relaxed mb-6">
-            Specializing in AI, Machine Learning, and Data Science with expertise in Python, Linux systems, 
-            and full-stack development. Every project is crafted with precision and optimized for performance.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
-              Python Expert
-            </span>
-            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
-              AI/ML Specialist
-            </span>
-            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
-              Data Scientist
-            </span>
-            <span className="px-4 py-2 bg-[#a68b5b]/20 border border-[#a68b5b]/40 rounded-full text-sm text-[#a68b5b] font-medium">
-              Linux Administrator
-            </span>
           </div>
         </div>
       </div>

@@ -2,42 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Mail, MessageSquare, Send, Github, Linkedin, Instagram, CheckCircle, AlertCircle, Copy } from 'lucide-react';
 
 // Looping typing effect hook (same as in Hero/About/Blog)
-function useLoopingTypingEffect(text: string, speed: number = 50, delay: number = 1000, eraseSpeed: number = 30, eraseDelay: number = 1000) {
+function useLoopingTypingEffect(text: string, speed: number = 50) {
   const [displayed, setDisplayed] = useState('');
-  const [phase, setPhase] = useState<'typing' | 'pausing' | 'erasing' | 'waiting'>('typing');
   const [i, setI] = useState(0);
-
   useEffect(() => {
     let timeout: number;
-    if (phase === 'typing') {
-      if (i < text.length) {
-        timeout = window.setTimeout(() => {
-          setDisplayed(text.slice(0, i + 1));
-          setI(i + 1);
-        }, speed);
-      } else {
-        setPhase('pausing');
-      }
-    } else if (phase === 'pausing') {
-      timeout = window.setTimeout(() => setPhase('erasing'), delay);
-    } else if (phase === 'erasing') {
-      if (i > 0) {
-        timeout = window.setTimeout(() => {
-          setDisplayed(text.slice(0, i - 1));
-          setI(i - 1);
-        }, eraseSpeed);
-      } else {
-        setPhase('waiting');
-      }
-    } else if (phase === 'waiting') {
+    if (i < text.length) {
       timeout = window.setTimeout(() => {
-        setPhase('typing');
-        setI(0);
-      }, eraseDelay);
+        setDisplayed(text.slice(0, i + 1));
+        setI(i + 1);
+      }, speed);
     }
     return () => clearTimeout(timeout);
-  }, [text, speed, delay, eraseSpeed, eraseDelay, i, phase]);
-
+  }, [text, speed, i]);
   return displayed;
 }
 
@@ -199,8 +176,8 @@ const Contact = () => {
     }
   ];
 
-  const typedMain = useLoopingTypingEffect(mainText, 50, 1000, 30, 1000);
-  const typedWarrior = useLoopingTypingEffect(warriorLine, 50, 1000, 30, 1000);
+  const typedMain = useLoopingTypingEffect(mainText, 50);
+  const typedWarrior = useLoopingTypingEffect(warriorLine, 50);
 
   return (
     <section id="contact" className="py-6 bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] relative overflow-hidden">
@@ -393,6 +370,7 @@ const Contact = () => {
                       </p>
                       <button
                         onClick={method.action}
+                        onMouseEnter={() => window.dispatchEvent(new CustomEvent('bubble-burst'))}
                         className="flex items-center space-x-2 text-sm text-[#a68b5b] hover:text-[#bfbfbf] transition-colors"
                       >
                         {copiedField === "email" ? (
@@ -425,6 +403,7 @@ const Contact = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`group flex items-center space-x-4 p-4 bg-[#0d0d0d] border border-[#a68b5b]/30 rounded-lg hover:border-[#a68b5b] transition-all duration-300 hover:transform hover:scale-105 ${channel.color}`}
+                    onMouseEnter={() => window.dispatchEvent(new CustomEvent('bubble-burst'))}
                   >
                     <div className="p-2 bg-[#a68b5b]/20 rounded-lg group-hover:bg-[#a68b5b]/30 transition-colors">
                       <channel.icon className="w-5 h-5 text-[#a68b5b]" />

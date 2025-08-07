@@ -49,7 +49,7 @@ const BackgroundAnimation = () => {
     resizeCanvas(canvas);
     
     // Initialize particles with optimized count
-    const particleCount = Math.min(50, Math.floor((canvas.width * canvas.height) / 20000));
+    const particleCount = Math.min(120, Math.floor((canvas.width * canvas.height) / 8000));
     particlesRef.current = Array.from({ length: particleCount }, () => createParticle(canvas));
 
     // Smooth resize handler with debouncing
@@ -64,6 +64,27 @@ const BackgroundAnimation = () => {
     };
 
     window.addEventListener('resize', handleResize);
+
+    // Listen for bubble burst events
+    const handleBubbleBurst = (e: CustomEvent<{ x?: number; y?: number }>) => {
+      // Add 20 new particles at a random or specified location
+      for (let i = 0; i < 20; i++) {
+        const burstX = e.detail?.x ?? Math.random() * canvas.width;
+        const burstY = e.detail?.y ?? Math.random() * canvas.height;
+        particlesRef.current.push({
+          ...createParticle(canvas),
+          x: burstX,
+          y: burstY,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          opacity: 0.7,
+          size: Math.random() * 1.5 + 0.8,
+          life: Math.random() * 400 + 200,
+          maxLife: Math.random() * 400 + 200,
+        });
+      }
+    };
+    window.addEventListener('bubble-burst', handleBubbleBurst as EventListener);
 
     // Optimized animation loop
     const animate = () => {
@@ -146,6 +167,7 @@ const BackgroundAnimation = () => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('bubble-burst', handleBubbleBurst as EventListener);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
